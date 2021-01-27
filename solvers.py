@@ -1,3 +1,5 @@
+import numpy as np
+import math 
 
 class Solvers:
     def __init__(self, initial_point, gradient, 
@@ -12,18 +14,17 @@ class Solvers:
         """
         Following code computes the steepest descent method of a 
         fixed function.
+        
+        Returns the nearest solution point (list) under fixed initial conditions
         """
         
-        aux_point = self.initial_point
+        aux_point = self.initial_point.copy()
         t = 0
-        while (self.gradient(aux_point)[0]**2 + self.gradient(aux_point)[1]**2)**0.5 > self.error and t < self.iterations:
-            
-            print(f'aux_point: {aux_point}, gradient = {self.gradient(aux_point)}')
-            gradient_aux = self.gradient(aux_point)
-            aux_point[0] = aux_point[0] - self.step_size * gradient_aux[0]
-            aux_point[1] = aux_point[1] - self.step_size * gradient_aux[1]
-            print(aux_point[1])
+        gradient_aux = self.gradient(aux_point)
+        while math.sqrt(np.dot(gradient_aux,gradient_aux)) > self.error and t < self.iterations:
+            aux_point = aux_point - np.dot(self.step_size, gradient_aux)
             t += 1
+            gradient_aux = self.gradient(aux_point)
         return aux_point
 
 if __name__ == "__main__":
